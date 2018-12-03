@@ -12,7 +12,6 @@ open Fake.Core
 open Fake.DotNet
 open Fake.IO
 
-let serverPath = Path.getFullName "./src/Server"
 let clientPath = Path.getFullName "./src/Client"
 let deployDir = Path.getFullName "./deploy"
 
@@ -66,13 +65,9 @@ Target.create "InstallClient" (fun _ ->
 )
 
 Target.create "Build" (fun _ ->
-    runDotNet "build" serverPath
     runDotNet "fable webpack-cli -- --config src/Client/webpack.config.js -p" clientPath
 )
 Target.create "Run" (fun _ ->
-    let server = async {
-        runDotNet "watch run" serverPath
-    }
     let client = async {
         runDotNet "fable webpack-dev-server -- --config src/Client/webpack.config.js" clientPath
     }
@@ -82,11 +77,9 @@ Target.create "Run" (fun _ ->
     }
 
     let vsCodeSession = Environment.hasEnvironVar "vsCodeSession"
-    let safeClientOnly = Environment.hasEnvironVar "safeClientOnly"
 
     let tasks =
-        [ if not safeClientOnly then yield server
-          yield client
+        [ yield client
           if not vsCodeSession then yield browser ]
 
     tasks

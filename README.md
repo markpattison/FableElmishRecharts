@@ -1,3 +1,3 @@
-# SAFE Template
+# FableElmishRecharts
 
 A sample using Fable.Recharts.

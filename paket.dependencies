@@ -1,12 +1,3 @@
-group Server
-    source https://api.nuget.org/v3/index.json
-    framework: netcoreapp2.1
-    storage: none
-
-    nuget FSharp.Core
-    nuget Saturn
-    nuget Fable.Remoting.Giraffe
-
 group Client
     source https://api.nuget.org/v3/index.json
     framework: netstandard2.0

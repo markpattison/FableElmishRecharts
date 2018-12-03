@@ -11,10 +11,11 @@ open Fable.Recharts
 open Fable.Recharts.Props
 module P = Fable.Helpers.React.Props
 
-open Shared
-
 open Fulma
 open Fable.Core
+
+type Data = { Name: string; X1: float; X2: float; X3: float; X4: float; X5: float }
+type Values = Data []
 
 type View = Page1 | Page2
 type ChartData = { Name: string; Range1: float * float; Range2: float * float; Median: float }
@@ -22,30 +23,18 @@ type ChartData = { Name: string; Range1: float * float; Range2: float * float; M
 type Model = { View: View; Values1: ChartData[] option; Values2: ChartData[] option }
 
 type Msg =
-    | RequestValues of int
-    | ReceiveValues of int * Result<Values, exn>
     | ShowPage1
     | ShowPage2
 
-module Server =
+let data1 = [| { Name = "31/12/2017"; X1 = 1.0; X2 = 1.0; X3 = 1.0; X4 = 1.0; X5 = 1.0 }
+               { Name = "31/12/2018"; X1 = 1.0; X2 = 2.0; X3 = 4.0; X4 = 5.0; X5 = 6.0 }
+               { Name = "31/12/2019"; X1 = 2.0; X2 = 3.0; X3 = 4.0; X4 = 5.0; X5 = 6.0 }
+            |]
 
-    open Shared
-    open Fable.Remoting.Client
-
-    let api : IDemoApi =
-      Remoting.createApi()
-      |> Remoting.withRouteBuilder Route.builder
-      |> Remoting.buildProxy<IDemoApi>
-
-let init () : Model * Cmd<Msg> =
-    { View = Page1; Values1 = None; Values2 = None }, []
-
-let loadDataCmd n =
-    Cmd.ofAsync
-        Server.api.demoValues
-        n
-        (fun v -> ReceiveValues (n, Ok v))
-        (fun exn -> ReceiveValues (n, Error exn))
+let data2 = [| { Name = "31/12/2017"; X1 = 1.0; X2 = 1.0; X3 = 1.0; X4 = 1.0; X5 = 1.0 }
+               { Name = "31/12/2018"; X1 = -1.0; X2 = 0.0; X3 = 1.0; X4 = 2.0; X5 = 3.0 }
+               { Name = "31/12/2019"; X1 = -3.0; X2 = -2.0; X3 = -1.0; X4 = 0.0; X5 = 1.0 }
+            |]
 
 let convertDataForChart data =
   data
@@ -57,12 +46,14 @@ let convertDataForChart data =
       Name = d.Name
     })
 
+let init () : Model * Cmd<Msg> =
+    { View = Page1
+      Values1 = convertDataForChart data1 |> Some
+      Values2 = convertDataForChart data2 |> Some
+    }, []
+
 let update (msg : Msg) (currentModel : Model) : Model * Cmd<Msg> =
     match msg with
-    | RequestValues n -> currentModel, loadDataCmd n
-    | ReceiveValues (1, Ok values) -> { currentModel with Values1 = values |> convertDataForChart |> Some }, []
-    | ReceiveValues (2, Ok values) -> { currentModel with Values2 = values |> convertDataForChart |> Some }, []
-    | ReceiveValues _ -> currentModel, []
     | ShowPage1 -> { currentModel with View = Page1 }, []
     | ShowPage2 -> { currentModel with View = Page2 }, []
 
@@ -116,13 +107,11 @@ let view (model : Model) (dispatch : Msg -> unit) =
         | Page1 ->
             div []
               [ div [] [ str "Page 1" ]
-                button "Get data" (fun _ -> RequestValues 1 |> dispatch)
                 button "Show page 2" (fun _ -> dispatch ShowPage2)
                 chart model.Values1 ]
         | Page2 ->
             div []
               [ div [] [ str "Page 2" ]
-                button "Get data" (fun _ -> RequestValues 2 |> dispatch)
                 button "Show page 1" (fun _ -> dispatch ShowPage1 )
                 chart model.Values2 ]
     div []
