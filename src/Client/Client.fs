@@ -22,9 +22,7 @@ type ChartData = { Name: string; Range1: float * float; Range2: float * float; M
 
 type Model = { View: View; Values1: ChartData[] option; Values2: ChartData[] option }
 
-type Msg =
-    | ShowPage1
-    | ShowPage2
+type Msg = | ShowPage of View
 
 let data1 = [| { Name = "31/12/2017"; X1 = 1.0; X2 = 1.0; X3 = 1.0; X4 = 1.0; X5 = 1.0 }
                { Name = "31/12/2018"; X1 = 1.0; X2 = 2.0; X3 = 4.0; X4 = 5.0; X5 = 6.0 }
@@ -54,17 +52,32 @@ let init () : Model * Cmd<Msg> =
 
 let update (msg : Msg) (currentModel : Model) : Model * Cmd<Msg> =
     match msg with
-    | ShowPage1 -> { currentModel with View = Page1 }, []
-    | ShowPage2 -> { currentModel with View = Page2 }, []
-
-let button txt onClick =
-    Button.button
-        [ Button.Color IsPrimary
-          Button.OnClick onClick ]
-        [ str txt ]
+    | ShowPage page -> { currentModel with View = page }, []
 
 let margin t r b l =
     Chart.Margin { top = t; bottom = b; right = r; left = l }
+
+let menuItem label page currentPage dispatch =
+    Menu.Item.li
+      [ Menu.Item.IsActive (page = currentPage)
+        Menu.Item.Props [ OnClick (fun _ -> ShowPage page |> dispatch) ] ]
+      [ str label ]
+
+let menu currentPage dispatch =
+  Menu.menu []
+    [ Menu.label []
+        [ str "General" ]
+      Menu.list []
+        [ menuItem "Page 1" Page1 currentPage dispatch
+          menuItem "Page 2" Page2 currentPage dispatch ] ]
+
+let navBar =
+    div []
+      [ Navbar.navbar [ Navbar.Color IsPrimary ]
+          [ Navbar.Brand.div []
+              [ Navbar.Item.div []
+                  [ Heading.h4 [] [ str "FableElmishRecharts" ] ] ] ] ]
+
 
 let view (model : Model) (dispatch : Msg -> unit) =
     let chart values =
@@ -97,29 +110,30 @@ let view (model : Model) (dispatch : Msg -> unit) =
                       P.Stroke "#666666"
                       P.StrokeWidth 2. ]
                     []
-
                   xaxis [ Cartesian.DataKey "Name"; Cartesian.Scale ScaleType.Point ] []
                   yaxis [ ] []
                   tooltip [] [] ]
         | None -> str "No data loaded"
+    
     let content =
         match model.View with
         | Page1 ->
             div []
-              [ div [] [ str "Page 1" ]
-                button "Show page 2" (fun _ -> dispatch ShowPage2)
+              [ div [] [ Heading.h4 [] [ str "Page 1" ] ]
                 chart model.Values1 ]
         | Page2 ->
             div []
-              [ div [] [ str "Page 2" ]
-                button "Show page 1" (fun _ -> dispatch ShowPage1 )
+              [ div [] [ Heading.h4 [] [ str "Page 2" ] ]
                 chart model.Values2 ]
     div []
-        [ Navbar.navbar [ Navbar.Color IsPrimary ]
-            [ Navbar.Item.div [ ]
-                [ Heading.h2 [ ]
-                    [ str "SAFE Template" ] ] ]
-          content ]
+        [ div [ ClassName "navbar-bg" ] [ navBar ]
+          Section.section []
+            [ Columns.columns []
+                [ Column.column
+                    [ Column.Width (Screen.All, Column.Is2) ]
+                    [ menu model.View dispatch ]
+                  Column.column []
+                    [ content ] ] ] ]
 
 #if DEBUG
 open Elmish.Debug
