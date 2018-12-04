@@ -111,7 +111,7 @@ let view (model : Model) (dispatch : Msg -> unit) =
                       P.StrokeWidth 2. ]
                     []
                   xaxis [ Cartesian.DataKey "Name"; Cartesian.Scale ScaleType.Point ] []
-                  yaxis [ ] []
+                  yaxis [ Cartesian.Type "number"; Cartesian.Domain [| box 0.0; box 10.0 |]; Cartesian.AllowDataOverflow true ] []
                   tooltip [] [] ]
         | None -> str "No data loaded"
     
