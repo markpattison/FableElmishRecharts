@@ -78,6 +78,14 @@ let navBar =
               [ Navbar.Item.div []
                   [ Heading.h4 [] [ str "FableElmishRecharts" ] ] ] ] ]
 
+let valueFormatter (value: obj) =
+    match value with
+    | :? (float[]) as arr ->
+        match arr with
+        | [| v1; v2 |] -> sprintf "£%.2f-£%.2f" v1 v2
+        | x -> x.ToString()
+    | :? float as v -> sprintf "£%.2f" v
+    | x -> x.ToString()
 
 let view (model : Model) (dispatch : Msg -> unit) =
     let chart values =
@@ -112,7 +120,7 @@ let view (model : Model) (dispatch : Msg -> unit) =
                     []
                   xaxis [ Cartesian.DataKey "Name"; Cartesian.Scale ScaleType.Point ] []
                   yaxis [ Cartesian.Type "number"; Cartesian.Domain [| box 0.0; box 10.0 |]; Cartesian.AllowDataOverflow true ] []
-                  tooltip [] [] ]
+                  tooltip [ Tooltip.Formatter valueFormatter ] [] ]
         | None -> str "No data loaded"
     
     let content =
