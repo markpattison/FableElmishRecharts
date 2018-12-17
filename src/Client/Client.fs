@@ -136,14 +136,18 @@ let view (model : Model) (dispatch : Msg -> unit) =
               [ div [] [ Heading.h4 [] [ str "Page 2" ] ]
                 chart model.Values2 ]
     div []
-        [ div [ ClassName "navbar-bg" ] [ navBar ]
+        [ div
+            [ ClassName "navbar-bg" ]
+            [ Container.container []
+                [ Navbar.View.root ] ]
           Section.section []
-            [ Columns.columns []
-                [ Column.column
-                    [ Column.Width (Screen.All, Column.Is2) ]
-                    [ menu model.View dispatch ]
-                  Column.column []
-                    [ content ] ] ] ]
+            [ Container.container []
+                [ Columns.columns []
+                    [ Column.column
+                        [ Column.Width (Screen.All, Column.Is2) ]
+                        [ menu model.View dispatch ]
+                      Column.column []
+                        [ content ] ] ] ] ]
 
 #if DEBUG
 open Elmish.Debug
