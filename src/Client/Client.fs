@@ -14,6 +14,8 @@ module P = Fable.Helpers.React.Props
 open Fulma
 open Fable.Core
 
+importAll "./sass/main.sass"
+
 type Data = { Name: string; X1: float; X2: float; X3: float; X4: float; X5: float }
 type Values = Data []
 
