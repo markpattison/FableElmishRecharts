@@ -28,6 +28,7 @@ let platformTool tool winTool =
 
 let nodeTool = platformTool "node" "node.exe"
 let npmTool = platformTool "npm" "npm.cmd"
+let npxTool = platformTool "npx" "npx.cmd"
 
 let runTool cmd args workingDir =
     let arguments = args |> String.split ' ' |> Arguments.OfArgs
@@ -51,6 +52,8 @@ let openBrowser url =
     |> Proc.run
     |> ignore
 
+// Targets
+
 Target.create "Clean" (fun _ ->
     Shell.cleanDirs [deployDir]
 )
@@ -65,11 +68,11 @@ Target.create "InstallClient" (fun _ ->
 )
 
 Target.create "Build" (fun _ ->
-    runDotNet "fable webpack-cli -- --config src/Client/webpack.config.js -p" clientPath
-)
+    runTool npxTool "webpack-cli --config webpack.config.js -p" clientPath)
+
 Target.create "Run" (fun _ ->
     let client = async {
-        runDotNet "fable webpack-dev-server -- --config src/Client/webpack.config.js" clientPath
+        runTool npxTool "webpack-dev-server --config webpack.config.js" clientPath
     }
     let browser = async {
         do! Async.Sleep 5000
@@ -88,6 +91,7 @@ Target.create "Run" (fun _ ->
     |> ignore
 )
 
+// Build order
 
 open Fake.Core.TargetOperators
 

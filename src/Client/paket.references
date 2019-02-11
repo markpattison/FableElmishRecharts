@@ -8,5 +8,3 @@ group Client
     Fable.Recharts
     Fable.React
     Fulma
-
-    dotnet-fable

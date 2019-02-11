@@ -13,8 +13,6 @@ group Client
     nuget Fable.Recharts prerelease
     nuget Fulma ~> 1
 
-    clitool dotnet-fable ~> 2
-
 group Build
     source https://api.nuget.org/v3/index.json
     framework: netstandard2.0
