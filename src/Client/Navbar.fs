@@ -1,9 +1,8 @@
-module Navbar.View
+module App.Navbar
 
 open Fable.FontAwesome
 open Fable.Helpers.React
 open Fable.Helpers.React.Props
-
 open Fulma
 
 let navButton classy href faClass txt =
@@ -21,7 +20,7 @@ let navButtons =
         [ navButton "twitter" "https://twitter.com/mark_pattison" Fa.Brand.Twitter "Twitter"
           navButton "github" "https://github.com/markpattison/FableElmishRecharts" Fa.Brand.Github "GitHub" ] ]
 
-let root =
+let view =
   Navbar.navbar [ Navbar.Color IsPrimary ]
     [ Navbar.Brand.div []
         [ Navbar.Item.div []

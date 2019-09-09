@@ -2,23 +2,14 @@ module App.Client
 
 open Elmish
 open Elmish.React
-
 open Fable.Core.JsInterop
 open Fable.Helpers.React
 open Fable.Helpers.React.Props
-open Fable.PowerPack.Fetch
-open Fable.Recharts
-open Fable.Recharts.Props
-module P = Fable.Helpers.React.Props
-
 open Fulma
-open Fable.Core
 
 importAll "./sass/main.sass"
 
 type Page = | ProbabilityFunnel
-
-type ChartData = { Name: string; Range1: float * float; Range2: float * float; Median: float }
 
 type Model = { CurrentPage: Page; ProbabilityFunnelModel: ProbabilityFunnel.Model }
 
@@ -51,24 +42,21 @@ let menu currentPage dispatch =
       Menu.list []
         [ menuItem "Probability funnel" ProbabilityFunnel currentPage dispatch ] ]
 
-let navBar =
-    div []
-      [ Navbar.navbar [ Navbar.Color IsPrimary ]
-          [ Navbar.Brand.div []
-              [ Navbar.Item.div []
-                  [ Heading.h4 [] [ str "FableElmishRecharts" ] ] ] ] ]
+let pageContent (model : Model) (dispatch : Msg -> unit) =
+  match model.CurrentPage with
+  | ProbabilityFunnel -> ProbabilityFunnel.view model.ProbabilityFunnelModel (ProbabilityFunnelMsg >> dispatch)
 
 let view (model : Model) (dispatch : Msg -> unit) =
-    div []
-        [ Navbar.View.root
-          Section.section []
-            [ Container.container []
-                [ Columns.columns []
-                    [ Column.column
-                        [ Column.Width (Screen.All, Column.Is2) ]
-                        [ menu model.CurrentPage dispatch ]
-                      Column.column []
-                        [ ProbabilityFunnel.view model.ProbabilityFunnelModel (ProbabilityFunnelMsg >> dispatch) ] ] ] ] ]
+  div []
+    [ Navbar.view
+      Section.section []
+        [ Container.container []
+            [ Columns.columns []
+                [ Column.column
+                    [ Column.Width (Screen.All, Column.Is2) ]
+                    [ menu model.CurrentPage dispatch ]
+                  Column.column []
+                    [ pageContent model dispatch ] ] ] ] ]
 
 #if DEBUG
 open Elmish.Debug
