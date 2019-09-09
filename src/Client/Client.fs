@@ -38,7 +38,7 @@ let menuItem label page currentPage dispatch =
 let menu currentPage dispatch =
   Menu.menu []
     [ Menu.label []
-        [ str "General" ]
+        [ str "Chart Types" ]
       Menu.list []
         [ menuItem "Probability funnel" ProbabilityFunnel currentPage dispatch ] ]
 
@@ -53,7 +53,7 @@ let view (model : Model) (dispatch : Msg -> unit) =
         [ Container.container []
             [ Columns.columns []
                 [ Column.column
-                    [ Column.Width (Screen.All, Column.Is2) ]
+                    [ Column.Width (Screen.All, Column.Is3) ]
                     [ menu model.CurrentPage dispatch ]
                   Column.column []
                     [ pageContent model dispatch ] ] ] ] ]

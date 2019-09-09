@@ -15,14 +15,16 @@ type Msg = | ToggleData
 
 type ChartData = { Name: string; OuterRange: float * float; InnerRange: float * float; Median: float }
 
-let data1 = [| { Name = "31/12/2017"; OuterRange = (1.0, 1.0); InnerRange = (1.0, 1.0); Median = 1.0 }
-               { Name = "31/12/2018"; OuterRange = (1.0, 6.0); InnerRange = (2.0, 5.0); Median = 4.0 }
-               { Name = "31/12/2019"; OuterRange = (2.0, 6.0); InnerRange = (3.0, 5.0); Median = 4.0 }
+let data1 = [| { Name = "31/12/2018"; OuterRange = (1.0, 1.0); InnerRange = (1.0, 1.0); Median = 1.0 }
+               { Name = "31/12/2019"; OuterRange = (1.2, 3.0); InnerRange = (1.6, 2.4); Median = 2.0 }
+               { Name = "31/12/2020"; OuterRange = (1.4, 5.2); InnerRange = (2.4, 3.8); Median = 3.0 }
+               { Name = "31/12/2021"; OuterRange = (1.5, 7.4); InnerRange = (3.2, 5.2); Median = 4.0 }
             |]
 
-let data2 = [| { Name = "31/12/2017"; OuterRange = (1.0, 1.0); InnerRange = (1.0, 1.0); Median = 1.0 }
-               { Name = "31/12/2018"; OuterRange = (-1.0, 3.0); InnerRange = (0.0, 2.0); Median = 1.0 }
-               { Name = "31/12/2019"; OuterRange = (-3.0, 1.0); InnerRange = (-2.0, 0.0); Median = -1.0 }
+let data2 = [| { Name = "31/12/2018"; OuterRange = (1.0, 1.0); InnerRange = (1.0, 1.0); Median = 1.0 }
+               { Name = "31/12/2019"; OuterRange = (0.5, 1.9); InnerRange = (1.1, 1.7); Median = 1.5 }
+               { Name = "31/12/2020"; OuterRange = (-0.3, 2.1); InnerRange = (0.7, 1.8); Median = 1.3 }
+               { Name = "31/12/2021"; OuterRange = (-0.9, 1.7); InnerRange = (0.1, 1.1); Median = 0.5 }
             |]
 
 let update (msg : Msg) (model : Model) : Model * Cmd<Msg> =
@@ -42,9 +44,9 @@ let valueFormatter (value: obj) =
 
 let showChart values =
   composedChart
-    [ Chart.Margin { top = 5.0; bottom = 20.0; right = 5.0; left = 0.0 }
-      Chart.Width 600.
-      Chart.Height 300.
+    [ Chart.Margin { top = 20.0; bottom = 20.0; right = 0.0; left = 0.0 }
+      Chart.Width 640.0
+      Chart.Height 320.0
       Chart.Data values ]
     [ cartesianGrid
         [ P.Stroke "#ccc"
@@ -85,6 +87,7 @@ let view (model : Model) (dispatch : Msg -> unit) =
     | Data2 -> data2, "Data set 2"
   
   div []
-    [ Heading.h4 [] [ str title ]
+    [ Heading.h4 [] [ str "Probability funnel" ]
+      p [] [ str "Used to show a range of possible outcomes by plotting percentile values." ]
       chartData |> showChart 
-      button (fun _ -> dispatch ToggleData) "Toggle data" ]
+      button (fun _ -> dispatch ToggleData) "Toggle data set" ]
