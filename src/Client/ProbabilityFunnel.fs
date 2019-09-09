@@ -1,48 +1,29 @@
 module App.ProbabilityFunnel
 
 open Elmish
-open Elmish.React
-
-open Fable.Core.JsInterop
 open Fable.Helpers.React
-open Fable.Helpers.React.Props
-open Fable.PowerPack.Fetch
 open Fable.Recharts
 open Fable.Recharts.Props
-module P = Fable.Helpers.React.Props
-
 open Fulma
-open Fable.Core
+
+module P = Fable.Helpers.React.Props
 
 type DataChoice = Data1 | Data2
 type Model = { DataChoice: DataChoice }
 
 type Msg = | ToggleData
 
-type Data = { Name: string; X1: float; X2: float; X3: float; X4: float; X5: float }
-type Values = Data []
+type ChartData = { Name: string; OuterRange: float * float; InnerRange: float * float; Median: float }
 
-type ChartData = { Name: string; Range1: float * float; Range2: float * float; Median: float }
-
-let data1 = [| { Name = "31/12/2017"; X1 = 1.0; X2 = 1.0; X3 = 1.0; X4 = 1.0; X5 = 1.0 }
-               { Name = "31/12/2018"; X1 = 1.0; X2 = 2.0; X3 = 4.0; X4 = 5.0; X5 = 6.0 }
-               { Name = "31/12/2019"; X1 = 2.0; X2 = 3.0; X3 = 4.0; X4 = 5.0; X5 = 6.0 }
+let data1 = [| { Name = "31/12/2017"; OuterRange = (1.0, 1.0); InnerRange = (1.0, 1.0); Median = 1.0 }
+               { Name = "31/12/2018"; OuterRange = (1.0, 6.0); InnerRange = (2.0, 5.0); Median = 4.0 }
+               { Name = "31/12/2019"; OuterRange = (2.0, 6.0); InnerRange = (3.0, 5.0); Median = 4.0 }
             |]
 
-let data2 = [| { Name = "31/12/2017"; X1 = 1.0; X2 = 1.0; X3 = 1.0; X4 = 1.0; X5 = 1.0 }
-               { Name = "31/12/2018"; X1 = -1.0; X2 = 0.0; X3 = 1.0; X4 = 2.0; X5 = 3.0 }
-               { Name = "31/12/2019"; X1 = -3.0; X2 = -2.0; X3 = -1.0; X4 = 0.0; X5 = 1.0 }
+let data2 = [| { Name = "31/12/2017"; OuterRange = (1.0, 1.0); InnerRange = (1.0, 1.0); Median = 1.0 }
+               { Name = "31/12/2018"; OuterRange = (-1.0, 3.0); InnerRange = (0.0, 2.0); Median = 1.0 }
+               { Name = "31/12/2019"; OuterRange = (-3.0, 1.0); InnerRange = (-2.0, 0.0); Median = -1.0 }
             |]
-
-let convertDataForChart data =
-  data
-  |> Array.map (fun d ->
-    {
-      Range1 = (d.X1, d.X5)
-      Range2 = (d.X2, d.X4)
-      Median = d.X3
-      Name = d.Name
-    })
 
 let update (msg : Msg) (model : Model) : Model * Cmd<Msg> =
   match msg with
@@ -70,13 +51,13 @@ let showChart values =
           P.StrokeDasharray "5 5" ]
         []
       area
-        [ Cartesian.DataKey "Range1"
+        [ Cartesian.DataKey "OuterRange"
           Cartesian.Name "90% within"
           P.Stroke "#666666"
           P.Fill "#000050" ]
         []
       area                  
-        [ Cartesian.DataKey "Range2"
+        [ Cartesian.DataKey "InnerRange"
           Cartesian.Name "68% within"
           P.Stroke "#666666"
           P.Fill "#000050" ]
@@ -105,5 +86,5 @@ let view (model : Model) (dispatch : Msg -> unit) =
   
   div []
     [ Heading.h4 [] [ str title ]
-      chartData |> convertDataForChart |> showChart 
+      chartData |> showChart 
       button (fun _ -> dispatch ToggleData) "Toggle data" ]
