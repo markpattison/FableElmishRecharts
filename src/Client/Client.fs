@@ -136,10 +136,7 @@ let view (model : Model) (dispatch : Msg -> unit) =
               [ div [] [ Heading.h4 [] [ str "Page 2" ] ]
                 chart model.Values2 ]
     div []
-        [ div
-            [ ClassName "navbar-bg" ]
-            [ Container.container []
-                [ Navbar.View.root ] ]
+        [ Navbar.View.root
           Section.section []
             [ Container.container []
                 [ Columns.columns []
