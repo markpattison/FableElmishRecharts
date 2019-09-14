@@ -43,7 +43,7 @@ let valueFormatter (value: obj) =
 
 let showChart values =
   composedChart
-    [ Chart.Margin { top = 20.0; bottom = 20.0; right = 0.0; left = 0.0 }
+    [ Chart.Margin { top = 20.0; bottom = 20.0; right = 20.0; left = 20.0 }
       Chart.Width 640.0
       Chart.Height 320.0
       Chart.Data values ]
@@ -80,8 +80,8 @@ let view (model : Model) (dispatch : Msg -> unit) =
 ## Probability funnel
 Used to show a range of possible outcomes by plotting percentile values."""
 
-      chartData |> showChart 
-      button (fun _ -> dispatch ToggleData) "Toggle data set"
+      showChart chartData
+      Button.list [] [ button (fun _ -> dispatch ToggleData) "Toggle data set" ]
       br []
 
       Markdown.parseAsReactEl "" """
