@@ -6,6 +6,8 @@ open Fable.Recharts
 open Fable.Recharts.Props
 open Fulma
 
+open Common
+
 module P = Fable.Helpers.React.Props
 
 type DataChoice = Data1 | Data2
@@ -47,41 +49,31 @@ let showChart values =
       Chart.Data values ]
     [ cartesianGrid
         [ P.Stroke "#ccc"
-          P.StrokeDasharray "5 5" ]
-        []
+          P.StrokeDasharray "5 5" ] []
       area
         [ Cartesian.DataKey "OuterRange"
           Cartesian.Name "90% within"
           P.Stroke "none"
-          P.Fill "#000050" ]
-        []
+          P.Fill "#000050" ] []
       area                  
         [ Cartesian.DataKey "InnerRange"
           Cartesian.Name "68% within"
           P.Stroke "none"
-          P.Fill "#000050" ]
-        []
+          P.Fill "#000050" ] []
       line
         [ Cartesian.DataKey "Median"
           Cartesian.Dot false
           P.Stroke "#666666"
-          P.StrokeWidth 2. ]
-        []
+          P.StrokeWidth 2. ] []
       xaxis [ Cartesian.DataKey "Name"; Cartesian.Scale ScaleType.Point ] []
       yaxis [ Cartesian.Type "number"; Cartesian.Domain [| box 0.0; box 10.0 |]; Cartesian.AllowDataOverflow true ] []
       tooltip [ Tooltip.Formatter valueFormatter ] [] ]
 
-let button onClick  txt =
-  Control.div []
-    [ Button.button
-        [ yield Button.OnClick onClick ]
-        [ str txt ] ]
-
 let view (model : Model) (dispatch : Msg -> unit) =
-  let chartData, title =
+  let chartData =
     match model.DataChoice with
-    | Data1 -> data1, "Data set 1"
-    | Data2 -> data2, "Data set 2"
+    | Data1 -> data1
+    | Data2 -> data2
   
   div []
     [ Markdown.parseAsReactEl "" """
@@ -128,29 +120,23 @@ For the y-axis we set the range manually to avoid the chart rescaling when diffe
           Chart.Data values ]
         [ cartesianGrid
             [ P.Stroke "#ccc"
-              P.StrokeDasharray "5 5" ]
-            []
+              P.StrokeDasharray "5 5" ] []
           area
             [ Cartesian.DataKey "OuterRange"
               Cartesian.Name "90% within"
               P.Stroke "none"
-              P.Fill "#000050" ]
-            []
+              P.Fill "#000050" ] []
           area                  
             [ Cartesian.DataKey "InnerRange"
               Cartesian.Name "68% within"
               P.Stroke "none"
-              P.Fill "#000050" ]
-            []
+              P.Fill "#000050" ] []
           line
             [ Cartesian.DataKey "Median"
               Cartesian.Dot false
               P.Stroke "#666666"
-              P.StrokeWidth 2. ]
-            []
+              P.StrokeWidth 2. ] []
           xaxis [ Cartesian.DataKey "Name"; Cartesian.Scale ScaleType.Point ] []
           yaxis [ Cartesian.Type "number"; Cartesian.Domain [| box 0.0; box 10.0 |]; Cartesian.AllowDataOverflow true ] []
           tooltip [ Tooltip.Formatter valueFormatter ] [] ]"""
-
       ]
-

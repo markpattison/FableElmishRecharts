@@ -5,6 +5,7 @@
   <ItemGroup>
     <Compile Include="Markdown.fs" />
     <Compile Include="Navbar.fs" />
+    <Compile Include="Common.fs" />
     <Compile Include="ProbabilityFunnel.fs" />
     <Compile Include="Client.fs" />
   </ItemGroup>
