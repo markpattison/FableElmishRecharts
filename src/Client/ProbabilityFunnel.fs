@@ -35,11 +35,8 @@ let update (msg : Msg) (model : Model) : Model * Cmd<Msg> =
 
 let valueFormatter (value: obj) =
   match value with
-  | :? (float[]) as arr ->
-    match arr with
-    | [| v1; v2 |] -> sprintf "£%.2f-£%.2f" v1 v2
-    | x -> x.ToString()
   | :? float as v -> sprintf "£%.2f" v
+  | :? (float[]) as arr when arr.Length = 2 -> sprintf "£%.2f-£%.2f" arr.[0] arr.[1]
   | x -> x.ToString()
 
 let showChart values =
@@ -87,7 +84,73 @@ let view (model : Model) (dispatch : Msg -> unit) =
     | Data2 -> data2, "Data set 2"
   
   div []
-    [ Heading.h4 [] [ str "Probability funnel" ]
-      p [] [ str "Used to show a range of possible outcomes by plotting percentile values." ]
+    [ Markdown.parseAsReactEl "" """
+## Probability funnel
+Used to show a range of possible outcomes by plotting percentile values."""
+
       chartData |> showChart 
-      button (fun _ -> dispatch ToggleData) "Toggle data set" ]
+      button (fun _ -> dispatch ToggleData) "Toggle data set"
+      br []
+
+      Markdown.parseAsReactEl "" """
+In the chart above we show an outer range (in this case between the 5th and 95th percentiles, hence containing 90% of outcomes), an inner range (16th-84th percentiles, containing 68% of outcomes) and the median (50th percentile).  This chart is slightly more complicated than a typical area chart because the plotted areas don't start from zero, and also overlap.
+
+###### Data types
+For the ranges we can use a tuple with two values, which will be converted into Javascript as an array with two values:
+
+    type ChartData = { Name: string; OuterRange: float * float; InnerRange: float * float; Median: float }
+
+    let data1 = [| { Name = "31/12/2018"; OuterRange = (1.0, 1.0); InnerRange = (1.0, 1.0); Median = 1.0 }
+                   { Name = "31/12/2019"; OuterRange = (1.2, 3.0); InnerRange = (1.6, 2.4); Median = 2.0 }
+                   { Name = "31/12/2020"; OuterRange = (1.4, 5.2); InnerRange = (2.4, 3.8); Median = 3.0 }
+                   { Name = "31/12/2021"; OuterRange = (1.5, 7.4); InnerRange = (3.2, 5.2); Median = 4.0 }
+                |]
+
+###### Tooltips
+In this example we use a custom value formatter to show the ranges sensibly.  This function takes a data point (which will either be a single value or an array of two values) and returns a string with the relevant tooltip text:
+
+    let valueFormatter (value: obj) =
+      match value with
+      | :? float as v -> sprintf "£%.2f" v
+      | :? (float[]) as arr when arr.Length = 2 -> sprintf "£%.2f-£%.2f" arr.[0] arr.[1]
+      | x -> x.ToString()
+
+###### Chart
+We compose a simple grid with two area-series for the ranges and one line-series for the median.  The DataKey property specifies which member of the data type will be used for that series.
+
+For the y-axis we set the range manually to avoid the chart rescaling when different data is used.  We also use the AllowDataOverflow property to avoid rescaling when values go outside this range.
+
+    let showChart values =
+      composedChart
+        [ Chart.Margin { top = 20.0; bottom = 20.0; right = 0.0; left = 0.0 }
+          Chart.Width 640.0
+          Chart.Height 320.0
+          Chart.Data values ]
+        [ cartesianGrid
+            [ P.Stroke "#ccc"
+              P.StrokeDasharray "5 5" ]
+            []
+          area
+            [ Cartesian.DataKey "OuterRange"
+              Cartesian.Name "90% within"
+              P.Stroke "none"
+              P.Fill "#000050" ]
+            []
+          area                  
+            [ Cartesian.DataKey "InnerRange"
+              Cartesian.Name "68% within"
+              P.Stroke "none"
+              P.Fill "#000050" ]
+            []
+          line
+            [ Cartesian.DataKey "Median"
+              Cartesian.Dot false
+              P.Stroke "#666666"
+              P.StrokeWidth 2. ]
+            []
+          xaxis [ Cartesian.DataKey "Name"; Cartesian.Scale ScaleType.Point ] []
+          yaxis [ Cartesian.Type "number"; Cartesian.Domain [| box 0.0; box 10.0 |]; Cartesian.AllowDataOverflow true ] []
+          tooltip [ Tooltip.Formatter valueFormatter ] [] ]"""
+
+      ]
+
