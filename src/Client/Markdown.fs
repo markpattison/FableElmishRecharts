@@ -17,9 +17,8 @@ module private Util =
     let renderer = createNew marked?Renderer ()
 
     renderer?heading <- fun (text: string) level ->
-        let escapedText = Regex.Replace(text.ToLower(), @"[^\w]+", "-")
-        sprintf """<h%s><a name="%s" class="anchor" href="#%s">%s</a></h%s>"""
-            level escapedText escapedText text level
+        sprintf """<h%s class="title is-%s">%s</h%s>"""
+            level level text level
 
     renderer?link <- fun href title text ->
         let href =
