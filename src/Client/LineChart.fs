@@ -25,6 +25,8 @@ let data = [|  { Name = "Spring"; A = 1.9; B = 3.0; C = 1.0 }
                { Name = "Winter"; A = 1.6; B = 3.0; C = 4.0 }
            |]
 
+let init = { LineChoice = Thick; DotsChoice = Dots }
+
 let update (msg : Msg) (model : Model) : Model * Cmd<Msg> =
   match msg with
   | ToggleLine ->

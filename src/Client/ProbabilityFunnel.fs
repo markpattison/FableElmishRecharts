@@ -29,6 +29,8 @@ let data2 = [| { Name = "31/12/2018"; OuterRange = (1.0, 1.0); InnerRange = (1.0
                { Name = "31/12/2021"; OuterRange = (-0.9, 1.7); InnerRange = (0.1, 1.1); Median = 0.5 }
             |]
 
+let init = { DataChoice = Data1 }
+
 let update (msg : Msg) (model : Model) : Model * Cmd<Msg> =
   match msg with
   | ToggleData ->

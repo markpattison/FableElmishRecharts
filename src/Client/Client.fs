@@ -23,8 +23,8 @@ type Msg =
 
 let init () : Model * Cmd<Msg> =
     { CurrentPage = LineChart
-      LineChartModel = { LineChoice = LineChart.Thick; DotsChoice = LineChart.Dots }
-      ProbabilityFunnelModel = { DataChoice = ProbabilityFunnel.Data1 }
+      LineChartModel = LineChart.init
+      ProbabilityFunnelModel = ProbabilityFunnel.init
     }, []
 
 let update (msg : Msg) (model : Model) : Model * Cmd<Msg> =
