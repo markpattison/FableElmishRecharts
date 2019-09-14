@@ -55,21 +55,18 @@ let showChart values =
       area
         [ Cartesian.DataKey "OuterRange"
           Cartesian.Name "90% within"
-          Cartesian.AnimationDuration 1000.0
           P.Stroke "none"
           P.Fill "#000050" ]
         []
       area                  
         [ Cartesian.DataKey "InnerRange"
           Cartesian.Name "68% within"
-          Cartesian.AnimationDuration 1000.0
           P.Stroke "none"
           P.Fill "#000050" ]
         []
       line
         [ Cartesian.DataKey "Median"
           Cartesian.Dot false
-          Cartesian.AnimationDuration 1000.0
           P.Stroke "#666666"
           P.StrokeWidth 2. ]
         []
