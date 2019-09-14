@@ -9,22 +9,30 @@ open Fulma
 
 importAll "./sass/main.sass"
 
-type Page = | ProbabilityFunnel
+type Page = LineChart | ProbabilityFunnel
 
-type Model = { CurrentPage: Page; ProbabilityFunnelModel: ProbabilityFunnel.Model }
+type Model =
+  { CurrentPage: Page
+    LineChartModel: LineChart.Model
+    ProbabilityFunnelModel: ProbabilityFunnel.Model }
 
 type Msg =
 | ShowPage of Page
+| LineChartMsg of LineChart.Msg
 | ProbabilityFunnelMsg of ProbabilityFunnel.Msg
 
 let init () : Model * Cmd<Msg> =
-    { CurrentPage = ProbabilityFunnel
+    { CurrentPage = LineChart
+      LineChartModel = { LineChoice = LineChart.Thick; DotsChoice = LineChart.Dots }
       ProbabilityFunnelModel = { DataChoice = ProbabilityFunnel.Data1 }
     }, []
 
 let update (msg : Msg) (model : Model) : Model * Cmd<Msg> =
     match msg with
     | ShowPage page -> { model with CurrentPage = page }, []
+    | LineChartMsg innerMsg ->
+        let updated, cmd = LineChart.update innerMsg model.LineChartModel
+        { model with LineChartModel = updated }, Cmd.map LineChartMsg cmd
     | ProbabilityFunnelMsg innerMsg ->
         let updated, cmd = ProbabilityFunnel.update innerMsg model.ProbabilityFunnelModel
         { model with ProbabilityFunnelModel = updated }, Cmd.map ProbabilityFunnelMsg cmd
@@ -40,10 +48,12 @@ let menu currentPage dispatch =
     [ Menu.label []
         [ str "Chart Types" ]
       Menu.list []
-        [ menuItem "Probability funnel" ProbabilityFunnel currentPage dispatch ] ]
+        [ menuItem "Line chart" LineChart currentPage dispatch
+          menuItem "Probability funnel" ProbabilityFunnel currentPage dispatch ] ]
 
 let pageContent (model : Model) (dispatch : Msg -> unit) =
   match model.CurrentPage with
+  | LineChart -> LineChart.view model.LineChartModel (LineChartMsg >> dispatch)
   | ProbabilityFunnel -> ProbabilityFunnel.view model.ProbabilityFunnelModel (ProbabilityFunnelMsg >> dispatch)
 
 let view (model : Model) (dispatch : Msg -> unit) =

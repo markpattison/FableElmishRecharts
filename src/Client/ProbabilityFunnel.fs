@@ -108,9 +108,9 @@ In this example we use a custom value formatter to show the ranges sensibly.  Th
       | x -> x.ToString()
 
 ###### Chart
-We compose a simple grid with two area-series for the ranges and one line-series for the median.  The DataKey property specifies which member of the data type will be used for that series.
+We compose a simple grid with two area-series for the ranges and one line-series for the median.  The `DataKey` property specifies which member of the data type will be used for that series.
 
-For the y-axis we set the range manually to avoid the chart rescaling when different data is used.  We also use the AllowDataOverflow property to avoid rescaling when values go outside this range.
+For the y-axis we set the range manually to avoid the chart rescaling when different data is used.  We also use the `AllowDataOverflow` property to avoid rescaling when values go outside this range.
 
     let showChart values =
       composedChart
