@@ -3,7 +3,9 @@ module App.Common
 open Fable.Helpers.React
 open Fulma
 
-let button onClick txt =
+let selectButton isSelected onClick txt =
   Button.button
-    [ yield Button.OnClick onClick ]
+    [ Button.OnClick onClick; Button.IsActive isSelected ]
     [ str txt ]
+
+let button onClick txt = selectButton false onClick txt

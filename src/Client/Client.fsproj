@@ -7,6 +7,7 @@
     <Compile Include="Navbar.fs" />
     <Compile Include="Common.fs" />
     <Compile Include="LineChart.fs" />
+    <Compile Include="BarChart.fs" />
     <Compile Include="ProbabilityFunnel.fs" />
     <Compile Include="Client.fs" />
   </ItemGroup>
