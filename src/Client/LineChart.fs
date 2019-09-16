@@ -1,14 +1,14 @@
 module App.LineChart
 
 open Elmish
-open Fable.Helpers.React
+open Fable.React
 open Fable.Recharts
 open Fable.Recharts.Props
 open Fulma
 
 open Common
 
-module P = Fable.Helpers.React.Props
+module P = Fable.React.Props
 
 type LineChoice = Thick | Dashed
 type DotChoice = Dots | NoDots

@@ -3,10 +3,8 @@ module App.Markdown
 open System.Text.RegularExpressions
 open Fable.Core
 open Fable.Core.JsInterop
-open Fable.Helpers.React
-open Fable.Helpers.React.Props
-
-
+open Fable.React
+open Fable.React.Props
 
 module private Util =
     let isAbsoluteUrl (url: string) =

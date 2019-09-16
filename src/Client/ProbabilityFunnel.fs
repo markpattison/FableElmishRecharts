@@ -1,14 +1,14 @@
 module App.ProbabilityFunnel
 
 open Elmish
-open Fable.Helpers.React
+open Fable.React
 open Fable.Recharts
 open Fable.Recharts.Props
 open Fulma
 
 open Common
 
-module P = Fable.Helpers.React.Props
+module P = Fable.React.Props
 
 type DataChoice = Data1 | Data2
 type Model = { DataChoice: DataChoice }

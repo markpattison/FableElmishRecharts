@@ -3,8 +3,8 @@ module App.Client
 open Elmish
 open Elmish.React
 open Fable.Core.JsInterop
-open Fable.Helpers.React
-open Fable.Helpers.React.Props
+open Fable.React
+open Fable.React.Props
 open Fulma
 
 importAll "./sass/main.sass"
@@ -85,7 +85,6 @@ open Elmish.HMR
 Program.mkProgram init update view
 #if DEBUG
 |> Program.withConsoleTrace
-|> Program.withHMR
 #endif
-|> Program.withReact "elmish-app"
+|> Program.withReactBatched "elmish-app"
 |> Program.run

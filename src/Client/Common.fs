@@ -1,6 +1,6 @@
 module App.Common
 
-open Fable.Helpers.React
+open Fable.React
 open Fulma
 
 let selectButton isSelected onClick txt =
