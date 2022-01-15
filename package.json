@@ -24,7 +24,7 @@
         "whatwg-fetch": "^3.6.2"
     },
     "dependencies": {
-        "marked": "^0.7.0",
+        "marked": "^4.0.10",
         "recharts": "^1.8.5"
     }
 }
