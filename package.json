@@ -25,6 +25,6 @@
     },
     "dependencies": {
         "marked": "^0.7.0",
-        "recharts": "^1.8.5"
+        "recharts": "^2.1.14"
     }
 }
